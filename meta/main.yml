@@ -1,0 +1,11 @@
+galaxy_info:
+  author: miiton
+  description: node_exporter
+  license: MIT
+  min_ansible_version: 2.1
+  galaxy_tags: ["monitoring", "prometheus"]
+
+dependencies:
+  - name: base
+    src: git+git@github.com:miiton/ansible-role-ubuntu-base.git
+    version: main

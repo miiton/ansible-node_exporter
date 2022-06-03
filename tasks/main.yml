@@ -1,0 +1,41 @@
+---
+- name: Check directory exists
+  stat:
+    path: /tmp/node_exporter-{{ node_exporter_version }}.linux-amd64
+  register: d
+
+- name: Download binary
+  unarchive:
+    src: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz
+    dest: /tmp/
+    remote_src: yes
+  when: not d.stat.exists
+  check_mode: no
+
+- name: Setup binary
+  copy:
+    remote_src: yes
+    src: /tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter
+    dest: /usr/local/bin/node_exporter
+    mode: 0755
+
+- name: Setup unitfile
+  blockinfile:
+    path: /etc/systemd/system/node_exporter.service
+    create: yes
+    block: |
+      [Unit]
+      Description=node_exporter Service for Prometheus
+      [Service]
+      Restart=always
+      ExecStart=/usr/local/bin/node_exporter
+      [Install]
+      WantedBy=multi-user.target
+  notify: Restart node_exporter
+
+- name: Start node_exporter
+  systemd:
+    name: node_exporter
+    enabled: yes
+    state: started
+    daemon_reload: yes
