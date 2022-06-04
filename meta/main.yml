@@ -2,10 +2,15 @@ galaxy_info:
   author: miiton
   description: node_exporter
   license: MIT
-  min_ansible_version: 2.1
+  min_ansible_version: "2.9"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - "focal"
+        - "jammy"
   galaxy_tags: ["monitoring", "prometheus"]
 
 dependencies:
-  - name: base
+  - name: ubuntu-base
     src: git+git@github.com:miiton/ansible-role-ubuntu-base.git
     version: main
